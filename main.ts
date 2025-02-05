@@ -172,4 +172,118 @@ const t: AppTheme = {
 
 //Exclude<T, U>
 //исключает из первого типа признаки присушие второму
-type UserSchemaType1 = {};
+type UserSchemaType1 = {
+    username: string;
+    email: string;
+    bio: string;
+    image: string;
+    id: number;
+    hash: string;
+    salt: string;
+};
+type PublicFields = Exclude<keyof UserSchemaType1, 'hash' | 'salt'>;
+
+//Extract<T, U>
+//обшие для двух типов признаки
+
+type Intersection = Extract<'id' | 'name', 'name'>;
+type Task3 = {
+    id: number;
+    text: string;
+    isCompleted?: boolean;
+    completedDate?: Date | undefined;
+};
+
+type UserSchemaType3 = {
+    username: string;
+    email: string;
+    bio: string;
+    image: string;
+    hash: string;
+    salt: string;
+    id: number;
+};
+
+type I = Extract<keyof Task, keyof UserSchemaType3>;
+
+//NonNullable
+//удаляет типы null и undefined
+type Task4 = {
+    id: number;
+    text: string;
+    isCompleted?: boolean;
+    completedDate?: Date | undefined;
+};
+
+function getTaskDate(date: Task['completedDate']): NonNullable<Task['completedDate']> {
+    if (!date) {
+        return new Date();
+    }
+    return date;
+}
+
+const task4: Task4 = {
+    id: 0,
+    text: 'Text',
+};
+const r = getTaskDate(task.completedDate);
+
+//Return Type
+//тип возможного значения из функции
+
+function getInt(n: string) {
+    return parseInt(n);
+}
+type R = ReturnType<typeof getInt>;
+function createTask() {
+    return{(
+        id:1,
+        text:"Text"
+    )}
+}
+type CreateTaskResult = ReturnType<typeof createTask>
+
+//Parameters
+//получить тип картежа аргументов функции
+
+function getInt2(n:string) {
+    return parseInt(n);
+}
+type Input = Parameters<typeof getInt>
+
+//ConstructorParameters
+//позволяет получить тип данных из аргументов конструктора
+
+class Person {
+    constructor(
+        public name:string,
+        public surname:string,
+        public age:number
+    ) {}
+}
+
+type Input = ConstructorParameters<typeof Person>
+
+//Awaited<T>
+//выполняет развертывания промисов 
+declare function fetch(): Promise<string>
+
+type FetchResult = Awaited<ReturnType<typeof fetch>>
+
+//Uppercase | LowerCase | Capitalize | Uncapitalize
+type Name = Uppercase<'name'>
+
+type User = typeof user4;
+
+type WithGetters<T extends string> = Record<`get${T}`,() => string>
+const user4 = {
+    name:"John",
+    age:40
+}
+
+declare function createGetters(u:User) User & WithGetters<keyof User>
+
+const userWithGetters = createGetters(user4)
+
+userWithGetters.name()
+userWithGetters.getAge()
